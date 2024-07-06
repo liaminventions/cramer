@@ -1,8 +1,8 @@
 package org.example
 
-var matrix = arrayOf(intArrayOf(2, 3), intArrayOf(5, 2))
+var matrix = arrayOf(arrayOf(2, 3), arrayOf(5, 2))
 
-fun printMatrix(mat: Array<IntArray>) {
+fun printMatrix(mat: Array<Array<Int>>) {
     val cols: Int = mat[0].size
     val rows: Int = mat[1].size
     for (i: Int in 0..<rows) {
@@ -15,8 +15,17 @@ fun printMatrix(mat: Array<IntArray>) {
 }
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
-fun det2(mat: Array<IntArray>): Int {
+fun det2(mat: Array<Array<Int>>): Int {
     return (mat[0][0]*mat[1][1])-(mat[1][0]*mat[0][1])
+}
+
+fun arbDet(size: Int, layers: Int, sign: Array<Array<Int>>, mat: Array<Array<Int>>) {
+
+}
+
+fun findDet(mat: Array<Array<Int>>) {
+    var layers: Int = 0
+    // var sign =
 }
 
 fun main() {
