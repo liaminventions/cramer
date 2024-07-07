@@ -19,13 +19,10 @@ fun printMatrix(mat: MutableList<MutableList<Int>>) {
 }
 
 fun det2(mat: MutableList<MutableList<Int>>): Int {
-    println("DET2")
-    printMatrix(mat)
     return (mat[0][0]*mat[1][1])-(mat[1][0]*mat[0][1])
 }
 
 fun arbDet(size: Int, layers: Int, sign: MutableList<MutableList<Int>>, mat: MutableList<MutableList<Int>>): Int {
-    println("REC")
     var result = 0
     if(size>2) {
         // make new square array of size "size-1"
@@ -43,20 +40,11 @@ fun arbDet(size: Int, layers: Int, sign: MutableList<MutableList<Int>>, mat: Mut
                 }
                 skip=0
             }
-            printMatrix(tempMatrix)
-            println("N=$n")
-            println("L> ${layers+1}")
-            //result+=(sign[layers][n]*mat[0][n])*(arbDet(size-1,layers+1,sign,tempMatrix))
-            val sig: Int = sign[layers][n]*mat[0][n]
-            val arb: Int = arbDet(size-1,layers+1,sign,tempMatrix)
-            println("M $sig $arb")
+            result+=(sign[layers][n]*mat[0][n])*(arbDet(size-1,layers+1,sign,tempMatrix))
         }
     } else {
         result=det2(mat)
     }
-    println("L< ${layers-1}")
-    println("R $result")
-    println("RET2")
     return result
 }
 
@@ -74,10 +62,6 @@ fun findDet(mat: MutableList<MutableList<Int>>): Int {
             num=-num
         }
     }
-    //debug
-    printMatrix(mat)
-    printMatrix(sign)
-    print("\n")
     return arbDet(rows,0,sign,mat)
 }
 
