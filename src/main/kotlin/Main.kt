@@ -1,66 +1,86 @@
 package org.example
 
-var matrix = arrayOf(arrayOf(2, 3), arrayOf(5, 2))
+var matrix = mutableListOf(
+    mutableListOf(1,4,3),
+    mutableListOf(3,2,1),
+    mutableListOf(5,5,5)
+)
 
-fun printMatrix(mat: Array<Array<Int>>) {
+fun printMatrix(mat: MutableList<MutableList<Int>>) {
     val cols: Int = mat[0].size
     val rows: Int = mat[1].size
-    for (i: Int in 0..<rows) {
-        for (j: Int in 0..<cols) {
+    for (i: Int in 0 until rows) {
+        for (j: Int in 0 until cols) {
             print("${mat[i][j]}\t")
         }
         print("\n")
     }
     print("\n")
 }
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
-fun det2(mat: Array<Array<Int>>): Int {
+
+fun det2(mat: MutableList<MutableList<Int>>): Int {
+    println("DET2")
+    printMatrix(mat)
     return (mat[0][0]*mat[1][1])-(mat[1][0]*mat[0][1])
 }
 
-fun arbDet(size: Int, layers: Int, sign: MutableList<MutableList<Int>>, mat: Array<Array<Int>>) {
-
+fun arbDet(size: Int, layers: Int, sign: MutableList<MutableList<Int>>, mat: MutableList<MutableList<Int>>): Int {
+    println("REC")
+    var result = 0
+    if(size>2) {
+        // make new square array of size "size-1"
+        var tempMatrix: MutableList<MutableList<Int>> = MutableList( size - 1) { MutableList(size - 1) { 0 } }
+        var firstEntryCol=1
+        for(n: Int in 0 until size) {
+            if(n>0) { firstEntryCol = 0 }
+            var skip = 0
+            for(i: Int in 0 until size-1) {
+                for(j: Int in 0 until size-1) {
+                    if(j+firstEntryCol==n) {
+                        skip=1
+                    }
+                    tempMatrix[i][j] = mat[i+1][j+firstEntryCol+skip]
+                }
+                skip=0
+            }
+            printMatrix(tempMatrix)
+            println("N=$n")
+            println("L> ${layers+1}")
+            //result+=(sign[layers][n]*mat[0][n])*(arbDet(size-1,layers+1,sign,tempMatrix))
+            val sig: Int = sign[layers][n]*mat[0][n]
+            val arb: Int = arbDet(size-1,layers+1,sign,tempMatrix)
+            println("M $sig $arb")
+        }
+    } else {
+        result=det2(mat)
+    }
+    println("L< ${layers-1}")
+    println("R $result")
+    println("RET2")
+    return result
 }
 
-fun findDet(mat: Array<Array<Int>>) {
+fun findDet(mat: MutableList<MutableList<Int>>): Int {
     val cols: Int = mat[0].size
     val rows: Int = mat[1].size
     if (cols!=rows) {
         println("ERROR: array not square")
     }
-    var layers: Int = 0
-    var sign = mutableListOf<MutableList<Int>>()
-    var num: Int = 1
-    repeat(rows) {
-        // `row` is a new row in the array
-        val row = mutableListOf<Int>()
-        repeat(cols) { col -> // `col` is a new column in the row
-            row += col
-        }
-
-        // Append the row to the array, can also use the `add()` function
-        sign += row
-    }
-    for(i: Int in 0..<rows) {
-        for(j: Int in 0..<cols) {
+    var sign: MutableList<MutableList<Int>> = MutableList(rows) { MutableList(cols) { 0 } }
+    var num = 1
+    for(i: Int in 0 until rows) {
+        for(j: Int in 0 until cols) {
             sign[i][j]=num
             num=-num
         }
     }
     //debug
-    for (i: Int in 0..<rows) {
-        for (j: Int in 0..<cols) {
-            print("${sign[i][j]}\t")
-        }
-        print("\n")
-    }
+    printMatrix(mat)
+    printMatrix(sign)
     print("\n")
     return arbDet(rows,0,sign,mat)
 }
 
 fun main() {
-    println(det2(matrix))
-    printMatrix(matrix)
-    findDet(matrix)
+    println(findDet(matrix))
 }
